@@ -12,9 +12,41 @@ namespace WebApiFuncionarios.Service
             _context = context;
         }
 
-        public Task<ServiceResponse<List<FuncionarioModel>>> CreateFuncionario(FuncionarioModel novoFuncionario)
+        public async Task<ServiceResponse<List<FuncionarioModel>>> CreateFuncionario(FuncionarioModel novoFuncionario)
         {
-            throw new NotImplementedException();
+           ServiceResponse<List<FuncionarioModel>> resposta = new ServiceResponse<List<FuncionarioModel>>();
+
+            try
+            {
+
+                var funcionario = new FuncionarioModel();
+                {
+                    funcionario = novoFuncionario;
+                }
+
+
+                if (funcionario is null)
+                {
+                    resposta.Mensagem = "Não foi possivel criar um novo funcionário";
+                    return resposta;
+                 }
+
+
+
+                _context.Funcionarios.Add(funcionario);
+                await _context.SaveChangesAsync();
+
+                resposta.Dados =  await  _context.Funcionarios.ToListAsync();
+                resposta.Mensagem = "Funcionário adicionado com sucesso";
+                return resposta;
+            }
+            catch (Exception ex)
+            {
+                resposta.Mensagem = ex.Message;
+                resposta.Sucesso = false;
+                return resposta;
+            }
+
         }
 
         public Task<ServiceResponse<List<FuncionarioModel>>> DeleteFuncionario(int id)
@@ -35,7 +67,9 @@ namespace WebApiFuncionarios.Service
                     return resposta;
                 }
 
-               
+                resposta.Dados = await _context.Funcionarios.ToListAsync();
+                resposta.Mensagem = "Dados retornados com sucesso";
+                return resposta;
 
             }
             catch(Exception ex)
@@ -43,9 +77,7 @@ namespace WebApiFuncionarios.Service
                 resposta.Mensagem = ex.Message;
                 return resposta;
             }
-            resposta.Dados = await _context.Funcionarios.ToListAsync();
-            resposta.Mensagem = "Dados retornados com sucesso";
-            return resposta;
+           
         }
 
         public Task<ServiceResponse<FuncionarioModel>> GetFuncionarioById(int id)
