@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApiFuncionarios.Model;
+using WebApiFuncionarios.Service;
 
 namespace WebApiFuncionarios.Controllers
 {
@@ -7,12 +9,17 @@ namespace WebApiFuncionarios.Controllers
     [ApiController]
     public class FuncionarioController : ControllerBase
     {
-       
-
-        [HttpGet]
-        public ActionResult get()
+        readonly private IFuncionarioInterface _funcionarioInterface;
+            public FuncionarioController(IFuncionarioInterface funcionarioInterface)
         {
-            return Ok("oi");
+               _funcionarioInterface = funcionarioInterface;    
+        }
+
+        [HttpGet("GetFuncionarios")]
+        public async Task<ActionResult<List<ServiceResponse<FuncionarioModel>>>>GetFuncionarios()
+        {
+            var funcionarios = await _funcionarioInterface.GetFuncionarios();
+            return Ok(funcionarios);
         }
     }
 }
