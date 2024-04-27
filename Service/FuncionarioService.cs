@@ -14,7 +14,7 @@ namespace WebApiFuncionarios.Service
 
         public async Task<ServiceResponse<List<FuncionarioModel>>> CreateFuncionario(FuncionarioModel novoFuncionario)
         {
-           ServiceResponse<List<FuncionarioModel>> resposta = new ServiceResponse<List<FuncionarioModel>>();
+            ServiceResponse<List<FuncionarioModel>> resposta = new ServiceResponse<List<FuncionarioModel>>();
 
             try
             {
@@ -29,14 +29,14 @@ namespace WebApiFuncionarios.Service
                 {
                     resposta.Mensagem = "Não foi possivel criar um novo funcionário";
                     return resposta;
-                 }
+                }
 
 
 
                 _context.Funcionarios.Add(funcionario);
                 await _context.SaveChangesAsync();
 
-                resposta.Dados =  await  _context.Funcionarios.ToListAsync();
+                resposta.Dados = await _context.Funcionarios.ToListAsync();
                 resposta.Mensagem = "Funcionário adicionado com sucesso";
                 return resposta;
             }
@@ -60,7 +60,7 @@ namespace WebApiFuncionarios.Service
             try
             {
                 var funcionarios = await _context.Funcionarios.ToListAsync();
-                
+
                 if (funcionarios.Count == 0)
                 {
                     resposta.Mensagem = "Não há dados na lista";
@@ -72,20 +72,41 @@ namespace WebApiFuncionarios.Service
                 return resposta;
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 resposta.Mensagem = ex.Message;
                 return resposta;
             }
-           
+
         }
 
-        public Task<ServiceResponse<FuncionarioModel>> GetFuncionarioById(int id)
+        public async Task<ServiceResponse<FuncionarioModel>> GetFuncionarioById(int id)
         {
-            throw new NotImplementedException();
+            ServiceResponse<FuncionarioModel> resposta = new ServiceResponse<FuncionarioModel>();
+
+            try
+            {
+                var funcionario = await _context.Funcionarios.FirstOrDefaultAsync(funcionarioBanco => funcionarioBanco.Id == id);
+                if(funcionario == null)
+                {
+                    resposta.Mensagem = "Funcionário não localizado";
+                    resposta.Sucesso = false;
+                }
+
+                resposta.Dados = funcionario;
+                resposta.Mensagem = "funcionario localizado!";
+                return resposta;
+            }
+            catch (Exception ex)
+            {
+
+                resposta.Mensagem = ex.Message;
+                resposta.Sucesso= false;
+                return resposta;
+            }
         }
 
-      
+
         public Task<ServiceResponse<List<FuncionarioModel>>> InativaFuncionario(int id)
         {
             throw new NotImplementedException();
@@ -97,3 +118,5 @@ namespace WebApiFuncionarios.Service
         }
     }
 }
+
+

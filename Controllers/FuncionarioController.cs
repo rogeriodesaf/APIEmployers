@@ -28,5 +28,13 @@ namespace WebApiFuncionarios.Controllers
             var funcionarios = await _funcionarioInterface.CreateFuncionario(novoFuncionario);
             return Ok(funcionarios);
         }
+
+        [HttpGet("GetFuncionarioById/{idFuncionario}")]
+        public async Task<ActionResult<ServiceResponse<FuncionarioModel>>> GetFuncionarioById(int idFuncionario)
+        {
+            var funcionario = await _funcionarioInterface.GetFuncionarioById(idFuncionario);    
+            return Ok(funcionario);
+        }
+
     }
 }
