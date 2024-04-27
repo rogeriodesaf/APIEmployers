@@ -49,5 +49,12 @@ namespace WebApiFuncionarios.Controllers
             var funcionario = await _funcionarioInterface.InativaFuncionario(id);
             return Ok(funcionario);
         }
+
+        [HttpPut("EditaFuncionario")]
+        public async Task<ActionResult<ServiceResponse<List<FuncionarioModel>>>> UpdateFuncionario(FuncionarioModel editadoFuncionario)
+        {
+            var funcionarios = await _funcionarioInterface.UpdateFuncionario(editadoFuncionario);   
+            return Ok(funcionarios);
+        }
     }
 }

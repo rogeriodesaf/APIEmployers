@@ -153,7 +153,7 @@ namespace WebApiFuncionarios.Service
 
                 resposta.Dados = funcionario;
                 resposta.Mensagem = "Funcionário desativado com sucesso!";
-                return resposta;
+                
 
 
             }
@@ -165,12 +165,42 @@ namespace WebApiFuncionarios.Service
                 return resposta;
             }
 
-          
+            return resposta;
         }
 
-        public Task<ServiceResponse<List<FuncionarioModel>>> UpdateFuncionario(FuncionarioModel editadoFuncionario)
+        public async Task<ServiceResponse<List<FuncionarioModel>>> UpdateFuncionario(FuncionarioModel editadoFuncionario)
         {
-            throw new NotImplementedException();
+            ServiceResponse<List<FuncionarioModel>> resposta = new ServiceResponse<List<FuncionarioModel>>();
+
+            try
+            {
+                var funcionarios = await _context.Funcionarios.AsNoTracking().FirstOrDefaultAsync(a=>a.Id == editadoFuncionario.Id);
+                if(funcionarios is null)
+                {
+                    resposta.Mensagem = "Funcionario não localizado";
+                    resposta.Sucesso = false;
+                    return resposta;
+                }
+
+                editadoFuncionario.DataDeAlteracao = DateTime.Now.ToLocalTime();
+               
+
+                _context.Update(editadoFuncionario);
+                await _context.SaveChangesAsync();
+
+                resposta.Dados = _context.Funcionarios.ToList();
+                resposta.Mensagem = "Funcionário editado com sucesso";
+
+            }
+            catch (Exception ex)
+            {
+
+                resposta.Mensagem = ex.Message;
+                resposta.Sucesso = false;
+                return resposta;
+            }
+
+            return resposta;
         }
     }
 }
