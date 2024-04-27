@@ -131,9 +131,41 @@ namespace WebApiFuncionarios.Service
         }
 
 
-        public Task<ServiceResponse<List<FuncionarioModel>>> InativaFuncionario(int id)
+        public async Task<ServiceResponse<FuncionarioModel>> InativaFuncionario(int id)
         {
-            throw new NotImplementedException();
+            ServiceResponse<FuncionarioModel> resposta = new ServiceResponse<FuncionarioModel>();
+            try
+            {
+                var funcionario = await _context.Funcionarios.FirstOrDefaultAsync(a=>a.Id == id);
+                if(funcionario is null)
+                {
+                    resposta.Mensagem = "Funcionario não localizado";
+                    resposta.Sucesso = false;
+                    return resposta;
+                }
+
+                funcionario.Ativo = false;
+                funcionario.DataDeAlteracao = DateTime.Now.ToLocalTime();
+
+                _context.Update(funcionario);
+                await _context.SaveChangesAsync();
+
+
+                resposta.Dados = funcionario;
+                resposta.Mensagem = "Funcionário desativado com sucesso!";
+                return resposta;
+
+
+            }
+            catch (Exception ex)
+            {
+
+                resposta.Mensagem = ex.Message;
+                resposta.Sucesso = false;
+                return resposta;
+            }
+
+          
         }
 
         public Task<ServiceResponse<List<FuncionarioModel>>> UpdateFuncionario(FuncionarioModel editadoFuncionario)

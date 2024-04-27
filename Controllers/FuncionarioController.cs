@@ -42,7 +42,12 @@ namespace WebApiFuncionarios.Controllers
             var funcionario = await _funcionarioInterface.DeleteFuncionario(id);
             return Ok(funcionario);
         }
-        
-         
+
+        [HttpPut("InativaFuncionario/{id}")]
+        public async Task<ActionResult<ServiceResponse<FuncionarioModel>>> InativaFuncionario(int id)
+        {
+            var funcionario = await _funcionarioInterface.InativaFuncionario(id);
+            return Ok(funcionario);
+        }
     }
 }
