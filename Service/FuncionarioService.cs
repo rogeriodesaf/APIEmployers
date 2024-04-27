@@ -49,9 +49,33 @@ namespace WebApiFuncionarios.Service
 
         }
 
-        public Task<ServiceResponse<List<FuncionarioModel>>> DeleteFuncionario(int id)
+        public async Task<ServiceResponse<List<FuncionarioModel>>> DeleteFuncionario(int id)
         {
-            throw new NotImplementedException();
+            ServiceResponse<List<FuncionarioModel>> resposta = new ServiceResponse<List<FuncionarioModel>>();
+
+            try
+            {
+                var funcionario = await  _context.Funcionarios.FirstOrDefaultAsync(a => a.Id == id);
+                if(funcionario is null)
+                {
+                    resposta.Mensagem = "Funcionário não localizado";
+                    resposta.Sucesso = false;
+                }
+
+                _context.Remove(funcionario);
+                await _context.SaveChangesAsync();
+
+                resposta.Dados= await _context.Funcionarios.ToListAsync();
+                resposta.Mensagem = "Funcionario removido com sucesso";
+                resposta.Sucesso = true;
+                return resposta;
+                
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<ServiceResponse<List<FuncionarioModel>>> GetFuncionarios()

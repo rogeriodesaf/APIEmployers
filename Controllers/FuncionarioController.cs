@@ -10,13 +10,13 @@ namespace WebApiFuncionarios.Controllers
     public class FuncionarioController : ControllerBase
     {
         readonly private IFuncionarioInterface _funcionarioInterface;
-            public FuncionarioController(IFuncionarioInterface funcionarioInterface)
+        public FuncionarioController(IFuncionarioInterface funcionarioInterface)
         {
-               _funcionarioInterface = funcionarioInterface;    
+            _funcionarioInterface = funcionarioInterface;
         }
 
         [HttpGet("GetFuncionarios")]
-        public async Task<ActionResult<List<ServiceResponse<FuncionarioModel>>>>GetFuncionarios()
+        public async Task<ActionResult<List<ServiceResponse<FuncionarioModel>>>> GetFuncionarios()
         {
             var funcionarios = await _funcionarioInterface.GetFuncionarios();
             return Ok(funcionarios);
@@ -32,9 +32,17 @@ namespace WebApiFuncionarios.Controllers
         [HttpGet("GetFuncionarioById/{idFuncionario}")]
         public async Task<ActionResult<ServiceResponse<FuncionarioModel>>> GetFuncionarioById(int idFuncionario)
         {
-            var funcionario = await _funcionarioInterface.GetFuncionarioById(idFuncionario);    
+            var funcionario = await _funcionarioInterface.GetFuncionarioById(idFuncionario);
             return Ok(funcionario);
         }
 
+        [HttpDelete("DeleteFuncionario/{id}")]
+        public async Task<ActionResult<List<ServiceResponse<FuncionarioModel>>>> DeleteFuncionario(int id)
+        {
+            var funcionario = await _funcionarioInterface.DeleteFuncionario(id);
+            return Ok(funcionario);
+        }
+        
+         
     }
 }
